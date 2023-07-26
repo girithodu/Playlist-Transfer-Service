@@ -25,11 +25,12 @@ export const getUserInfo = async (accessToken) => {
   }
 };
 
-export const getPlaylistsForUser = async (accessToken, id) => {
+export const getPlaylistsForUser = async (accessToken, id, url) => {
+  let urlToUse = url || `https://api.spotify.com/v1/users/${id}/playlists`
   // eslint-disable-next-line no-useless-catch
   try {
     const results = await axios.get(
-      `https://api.spotify.com/v1/users/${id}/playlists?limit=30&offset=0`,
+      `${urlToUse}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,

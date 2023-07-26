@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
-import { spotifyLoginUrl} from "./Authorization/spotify_authorization.js";
-import axios from "axios";
-import {getUserInfo, getPlaylistsForUser } from '../helperFunctions/helperFunctions.js';
+import { spotifyLoginUrl } from "./Authorization/spotify_authorization.js";
+import PlaylistComponent from "./Playlist/PlaylistComponent.jsx";
+import {
+  getUserInfo,
+  getPlaylistsForUser,
+} from "../helperFunctions/helperFunctions.js";
 import "./App.css";
 
 function App() {
@@ -16,16 +19,16 @@ function App() {
       setToken(accessToken);
       console.log(accessToken);
       getUserInfo(accessToken)
-      .then((data) => {
-        const { images, id} = data;
-        setUserData({id, images})
-        return getPlaylistsForUser(accessToken, id);
-      })
-      .then((results) => {
-        console.log(results);
-        setPlaylistData(results);
-      })
-      .catch((err) => console.log(err));
+        .then((data) => {
+          const { images, id } = data;
+          setUserData({ id, images });
+          console.log("token recieved");
+          return getPlaylistsForUser(accessToken, id);
+        })
+        .then((results) => {
+          setPlaylistData(results);
+        })
+        .catch((err) => console.log(err));
     }
   }, []);
 
@@ -33,7 +36,15 @@ function App() {
     const url = spotifyLoginUrl();
     window.open(url, "_blank");
   };
-
+  const onNextHandler = (direction) => {
+    getPlaylistsForUser(token, userData.id, playlistData[direction])
+      .then((results) => {
+        setPlaylistData(results);
+      })
+      .catch((err) => {
+        console.log(err, "Err in next button");
+      });
+  };
   if (!playlistData) {
     return (
       <>
@@ -44,6 +55,10 @@ function App() {
     return (
       <>
         <h1>Playlists</h1>
+        <PlaylistComponent
+          playlistData={playlistData}
+          onNextHandler={onNextHandler}
+        />
       </>
     );
   }
