@@ -1,35 +1,39 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
+import { spotifyLoginUrl } from "./Authorization/spotify_authorization.js";
+import "./App.css";
+
+
+//window.open(URL, name, specs, replace)
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [token, setToken] = useState(null);
+  useEffect(() => {
+    const currentUrl = window.location.href;
+    const hashFragment = currentUrl.split("#")[1];
+    const accessToken = new URLSearchParams(hashFragment).get("access_token");
+    if(accessToken) {
+      setToken(accessToken);
+    }
+  }, []);
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+  const onLoginHandler = () => {
+    const url = spotifyLoginUrl();
+    window.open(url, "_blank");
+  };
+
+  if (!token) {
+    return (
+      <>
+        <button onClick={onLoginHandler}>Login In With Spotify</button>
+      </>
+    );
+  } else {
+    return(
+      <>
+      <h1>Playlists</h1>
+      </>
+    );
+  }
 }
 
-export default App
+export default App;
