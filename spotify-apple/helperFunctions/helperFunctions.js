@@ -1,3 +1,4 @@
+import axios from "axios";
 export const generateRandomString = (length) => {
   let text = "";
   const possible =
@@ -7,4 +8,37 @@ export const generateRandomString = (length) => {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return text;
+};
+
+export const getUserInfo = async (accessToken) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const results = await axios.get("https://api.spotify.com/v1/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const { data } = results;
+    return data;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const getPlaylistsForUser = async (accessToken, id) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const results = await axios.get(
+      `https://api.spotify.com/v1/users/${id}/playlists?limit=30&offset=0`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    const { data } = results;
+    return data;
+  } catch (err) {
+    throw err;
+  }
 };
