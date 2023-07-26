@@ -1,0 +1,14 @@
+.playlist-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3125rem;
+  align-items: center;
+}
+.playlist-image-selected {
+  border-style: solid;
+  border-color: greenyellow;
+}
+.playlist-image,.playlist-image-selected {
+  height: 11.5625rem;
+  width: 11.5625rem;
+}
